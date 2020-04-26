@@ -4,6 +4,8 @@ A simple example to demonstrate integration with YouTube Data API V3 and Kafka. 
 
 No experience with kafka or YouTube APIs required
 
+![architecture](screenshots/architecture.png)
+
 
 ## How this could be used?
 
@@ -11,27 +13,30 @@ If you are playing a playlist on your TV, you will no longer need to give your W
 
 ## Watch this in action (video/screencast)
 
-Via web UI: https://youtu.be/zz3hpK_vB-0
-Via command line interface: https://youtu.be/IIl6h1mPEjw
+- Via web UI: https://youtu.be/zz3hpK_vB-0
+- Via command line interface: https://youtu.be/IIl6h1mPEjw
 
 
 ## One time setup
 
-**Step 1. Create an app on https://console.cloud.google.com/ and set up Oauth**
+1. Create an app on https://console.cloud.google.com/ and set up Oauth
 
 You will need client_secret and app id later
 
-**Step 2. Create a playlist where you want to add songs**
+2. Create a playlist where you want to add songs
 
 You will need the playlist id
 
-**Step 3. Download the code**
+3. Set up project
 
-Add the client secret and the playlist id to `SongsProcessor.java`**
+- Use Git or checkout with SVN using the web URL. https://github.com/rishirdua/kakfa-youtube.git
+- Add the client secret and the playlist id to `SongsProcessor.java`**
+- Update the playlist ID with the playlist ID from step 3 above.
 
 **Step 4. Install kafka**
 
-Enable deleting kafka topics [link](https://kafka.apache.org/quickstart). Set `delete.topic.enable=true` as we'll use that to clean up topics from previous runs
+- https://kafka.apache.org/downloads
+- Enable deleting kafka topics [link](https://kafka.apache.org/quickstart). Set `delete.topic.enable=true` as we'll use that to clean up topics from previous runs
 
 ## How to use
 
@@ -43,11 +48,15 @@ You will probably need a different terminal tab for each of these steps
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
+![zookeeper](screenshots/zookeeper.png)
+
 2. Run kafka
 
 ```
 bin/kafka-server-start.sh config/server.properties
 ```
+
+![kafka](screenshots/kakfa.png)
 
 3. Set up kafka topics
 
@@ -64,23 +73,42 @@ bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-fac
 bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 ```
 
+![topics](screenshots/topics.png)
 
-5. Compile and run the following command
+5. Compile and run the program
 
 Compile
 ```
 /Library/Java/JavaVirtualMachines/jdk1.8.0_212.jdk/Contents/Home/bin/java -Dmaven.multiModuleProjectDirectory=/Users/rdua/kafka/songsqueue "-Dmaven.home=/Applications/LI IntelliJ IDEA 2019.3.app/Contents/plugins/maven/lib/maven3" "-Dclassworlds.conf=/Applications/LI IntelliJ IDEA 2019.3.app/Contents/plugins/maven/lib/maven3/bin/m2.conf" "-Dmaven.ext.class.path=/Applications/LI IntelliJ IDEA 2019.3.app/Contents/plugins/maven/lib/maven-event-listener.jar" "-javaagent:/Applications/LI IntelliJ IDEA 2019.3.app/Contents/lib/idea_rt.jar=54847:/Applications/LI IntelliJ IDEA 2019.3.app/Contents/bin" -Dfile.encoding=UTF-8 -classpath "/Applications/LI IntelliJ IDEA 2019.3.app/Contents/plugins/maven/lib/maven3/boot/plexus-classworlds-2.6.0.jar" org.codehaus.classworlds.Launcher -Didea.version2019.3.3 compile
 ```
 
+![compile](screenshots/compile.png)
+
 Run
 ```
 mvn exec:java -Dexec.mainClass=com.rishidua.SongsProcessor
 ```
 
-6. For command line version, start the consumer using the command below. For UI version, set up a host
+![oauth](screenshots/oauth.png)
+
+6. For command line version, start the consumer using the command below. For UI version, set up a webhost as well
 ```
 bin/kafka-console-producer.sh --broker-list localhost:9092 --topic songs-requests
 ```
+
+7. Set up a web UI to take inputs (optional)
+
+Run the following from the web directory
+
+```
+php -S localhost:8000
+```
+
+Go to the browser and start queueing songs.
+
+![web_ui](screenshots/web_ui.png)
+
+To enable conections from outside your home WiFi network via your public IP, set up forwarding requessts to 8000 (or any port of your choice) to your machine on your router settings (usually in some kind of firewall settings).
 
 7. Stream the logs (optional)
 ```
@@ -119,3 +147,7 @@ com.google.api.client.googleapis.json.GoogleJsonResponseException: 302 Found
 The official documentation lists a bunch of possible errors, but not this one
 
 https://developers.google.com/youtube/v3/docs/core_errors
+
+Here's my Tweet talking more about the error:
+
+![tweet](screenshots/tweet.png)
